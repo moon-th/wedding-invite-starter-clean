@@ -30,7 +30,7 @@ export function AboutUs({ meta }: { meta: InviteMeta }) {
       birth: '1990년 12월 10일',
       mbti: 'ISTP',
       tags: ['#캠핑', '#러닝'],
-      photo: '/sample/moon.jpeg',
+      photo: '/sample/moon.png',
     },
     {
       label: '신부',
