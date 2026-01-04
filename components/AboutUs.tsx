@@ -39,7 +39,7 @@ export function AboutUs({ meta }: { meta: InviteMeta }) {
       birth: '1993년 3월 14일',
       mbti: 'ESTJ',
       tags: ['#스노우보드', '#캠핑'],
-      photo: '/sample/about-bride.svg',
+      photo: '/sample/nari.jpeg',
     },
   ];
 
