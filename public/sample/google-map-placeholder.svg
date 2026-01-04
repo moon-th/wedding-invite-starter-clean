@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="420" viewBox="0 0 720 420">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f3f9f3"/>
+      <stop offset="1" stop-color="#e6f2ff"/>
+    </linearGradient>
+  </defs>
+  <rect width="720" height="420" rx="18" fill="url(#bg)"/>
+  <path d="M80 320c60-40 100-40 140-30 40 10 80-10 120-30s80-30 120-20c40 10 80 40 120 30s80-60 120-60" stroke="#c4ddc9" stroke-width="3" fill="none"/>
+  <path d="M90 280c10-30 40-50 80-40 40 10 70 50 110 40s70-70 110-80c40-10 80 30 120 40s80-10 120-40" stroke="#bcd6ef" stroke-width="4" fill="none" opacity=".8"/>
+  <rect x="40" y="40" width="640" height="340" rx="16" fill="none" stroke="#dce5ed" stroke-dasharray="6 6"/>
+  <path d="M360 160c26 0 48 22 48 48 0 36-38 75-43 79a4 4 0 0 1-6 0c-5-4-43-43-43-79 0-26 22-48 48-48Z" fill="#e53935"/>
+  <circle cx="360" cy="208" r="16" fill="#ffd54f"/>
+  <rect x="90" y="76" width="180" height="14" rx="7" fill="#d8e2eb"/>
+  <rect x="90" y="96" width="220" height="14" rx="7" fill="#d8e2eb"/>
+  <rect x="90" y="116" width="140" height="14" rx="7" fill="#d8e2eb"/>
+  <rect x="470" y="300" width="80" height="16" rx="8" fill="#d8e2eb"/>
+  <rect x="580" y="300" width="50" height="16" rx="8" fill="#d8e2eb"/>
+  <text x="40" y="32" font-family="Arial, sans-serif" font-size="14" fill="#9aa9b8">Google Maps Preview</text>
+</svg>

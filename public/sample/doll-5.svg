@@ -1,0 +1,22 @@
+<svg width="600" height="900" viewBox="0 0 600 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+<defs>
+  <linearGradient id="g5" x1="0" y1="0" x2="1" y2="1">
+    <stop stop-color="#fdf6ff"/>
+    <stop offset="1" stop-color="#f1e0ff"/>
+  </linearGradient>
+</defs>
+<rect width="600" height="900" fill="url(#g5)"/>
+<circle cx="300" cy="240" r="170" fill="#ead6ff" opacity="0.5"/>
+<rect x="120" y="360" width="360" height="340" rx="130" fill="#0f0f16"/>
+<rect x="190" y="400" width="220" height="150" rx="70" fill="#fff9ff"/>
+<rect x="200" y="560" width="200" height="120" rx="34" fill="#e2d2ff"/>
+<rect x="110" y="640" width="130" height="210" rx="42" fill="#f0e6ff"/>
+<rect x="360" y="640" width="130" height="210" rx="42" fill="#f0e6ff"/>
+<rect x="150" y="120" width="300" height="240" rx="130" fill="#f7a2c9"/>
+<rect x="174" y="140" width="252" height="205" rx="112" fill="#fff4fa"/>
+<circle cx="260" cy="255" r="24" fill="#2f2f2f"/>
+<circle cx="350" cy="255" r="24" fill="#2f2f2f"/>
+<rect x="265" y="295" width="80" height="18" rx="9" fill="#f7a2c9"/>
+<path d="M190 175C230 140 270 120 320 120C370 120 410 140 450 175C410 120 370 95 320 95C270 95 230 120 190 175Z" fill="#e97ab3"/>
+<text x="300" y="790" text-anchor="middle" font-family="Arial, sans-serif" font-size="32" fill="#7b63c4" opacity="0.8">sample</text>
+</svg>
