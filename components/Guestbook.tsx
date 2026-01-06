@@ -3,12 +3,25 @@
 import { useEffect, useMemo, useState } from 'react';
 import type { InviteMeta } from '@/lib/utils';
 import { isDemo } from '@/lib/utils';
+import { db } from '@/lib/firebase';
+import { ensureAnonUid } from '@/lib/ensureAnon';
+import {
+  addDoc,
+  collection,
+  getDocs,
+  limit,
+  orderBy,
+  query,
+  serverTimestamp,
+  Timestamp,
+} from 'firebase/firestore';
 
 type Entry = { name: string; message: string; time?: string };
 
 export default function Guestbook({ meta }: { meta: InviteMeta }) {
+  const useFirestore = Boolean(process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID);
   const gasUrl = meta.gasGuestbookUrl || process.env.NEXT_PUBLIC_GUESTBOOK_URL || '';
-  const inactive = !gasUrl;
+  const inactive = !gasUrl && !useFirestore;
   const sample: Entry[] = useMemo(
     () => [
       {
@@ -42,27 +55,42 @@ export default function Guestbook({ meta }: { meta: InviteMeta }) {
     setLoading(true);
     setError(null);
     try {
-      const url = new URL(gasUrl);
-      if (!url.searchParams.has('method')) url.searchParams.set('method', 'list');
-      url.searchParams.set('_ts', String(Date.now()));
+      if (useFirestore) {
+        const q = query(collection(db, 'guestbook'), orderBy('createdAt', 'desc'), limit(100));
+        const snap = await getDocs(q);
+        const mapped = snap.docs.map((d) => {
+          const data = d.data() as any;
+          const ts: Timestamp | undefined = data.createdAt;
+          return {
+            name: data.name ?? '익명',
+            message: data.message ?? '',
+            time: ts ? ts.toDate().toLocaleString() : '',
+          };
+        });
+        setEntries(mapped.length ? mapped : sample);
+      } else {
+        const url = new URL(gasUrl);
+        if (!url.searchParams.has('method')) url.searchParams.set('method', 'list');
+        url.searchParams.set('_ts', String(Date.now()));
 
-      const res = await fetch(url.toString());
-      if (!res.ok) throw new Error(`status ${res.status}`);
-      const data = await res.json();
-      const list = Array.isArray(data?.list)
-        ? data.list
-        : Array.isArray(data?.rows)
-          ? data.rows
-          : null;
-      if (!Array.isArray(list)) return;
+        const res = await fetch(url.toString());
+        if (!res.ok) throw new Error(`status ${res.status}`);
+        const data = await res.json();
+        const list = Array.isArray(data?.list)
+          ? data.list
+          : Array.isArray(data?.rows)
+            ? data.rows
+            : null;
+        if (!Array.isArray(list)) return;
 
-      const mapped = list.map((it: any) => ({
-        name: it?.name ?? '익명',
-        message: it?.message ?? '',
-        time: String(it?.timestamp ?? it?.created_at ?? it?.time ?? ''),
-      }));
-      setEntries(mapped.length ? mapped : sample);
-    } catch {
+        const mapped = list.map((it: any) => ({
+          name: it?.name ?? '익명',
+          message: it?.message ?? '',
+          time: String(it?.timestamp ?? it?.created_at ?? it?.time ?? ''),
+        }));
+        setEntries(mapped.length ? mapped : sample);
+      }
+    } catch (err) {
       setError('방명록을 불러오지 못했습니다.');
       setEntries(sample);
     } finally {
@@ -93,15 +121,25 @@ export default function Guestbook({ meta }: { meta: InviteMeta }) {
     setSubmitting(true);
     setError(null);
     try {
-      const res = await fetch(gasUrl, {
-        method: 'POST',
-        body: JSON.stringify({
+      if (useFirestore) {
+        const uid = await ensureAnonUid();
+        await addDoc(collection(db, 'guestbook'), {
           name: form.name.trim(),
           message: form.message.trim(),
-          password: form.password.trim(),
-        }),
-      });
-      if (!res.ok) throw new Error(`status ${res.status}`);
+          authorUid: uid,
+          createdAt: serverTimestamp(),
+        });
+      } else {
+        const res = await fetch(gasUrl, {
+          method: 'POST',
+          body: JSON.stringify({
+            name: form.name.trim(),
+            message: form.message.trim(),
+            password: form.password.trim(),
+          }),
+        });
+        if (!res.ok) throw new Error(`status ${res.status}`);
+      }
       // 저장 직후 바로 리스트 다시 불러오기
       setForm({ name: '', message: '', password: '' });
       await fetchEntries();
