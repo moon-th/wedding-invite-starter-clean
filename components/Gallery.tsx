@@ -1,32 +1,12 @@
 // components/Gallery.tsx
 'use client';
+import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
-import { driveSrc } from '@/lib/utils';
 
 export default function Gallery({ imageIds = [] }: { imageIds?: string[] }) {
-  const validIds = Array.isArray(imageIds)
-    ? imageIds.filter((v): v is string => typeof v === 'string' && v.trim().length > 0)
-    : [];
-  const sampleImages = [
-    '/sample/doll-1.svg',
-    '/sample/doll-2.svg',
-    '/sample/doll-3.svg',
-    '/sample/doll-4.svg',
-    '/sample/doll-5.svg',
-    '/sample/doll-6.svg',
-  ];
-
-  const toSrc = (id: string) => {
-    // 이미 완전한 URL 또는 로컬 경로면 그대로 사용, 아니면 구글 드라이브 링크로 변환
-    const safe = (id || '').toString();
-    if (!safe) return '';
-    if (/^https?:\/\//.test(safe) || safe.startsWith('/')) return safe;
-    return driveSrc(safe);
-  };
-
-  const items = sampleImages;
+  const items = Array.from({ length: 20 }, (_, i) => `/src/image_webp/${i + 1}.webp`);
   const total = items.length;
-  const previewItems = items.slice(0, 6); // 기본 그리드: 3 x 2
+  const previewItems = items; // 20장 모두 보여줌
 
   const [viewerIdx, setViewerIdx] = useState<number | null>(null);
   const touchStartX = useRef<number | null>(null);
@@ -73,7 +53,17 @@ export default function Gallery({ imageIds = [] }: { imageIds?: string[] }) {
                   onClick={() => openViewer(i)}
                   type="button"
                 >
-                  <img src={src} alt="" className="gallery-img" loading="lazy" />
+                  <div className="gallery-img-wrap">
+                    <Image
+                      src={src}
+                      alt=""
+                      width={900}
+                      height={1200}
+                      sizes="(max-width: 768px) 45vw, 300px"
+                      className="gallery-img"
+                      priority={i < 3}
+                    />
+                  </div>
                 </button>
               </figure>
             ))}
@@ -88,13 +78,23 @@ export default function Gallery({ imageIds = [] }: { imageIds?: string[] }) {
 
       {inViewer && viewerIdx !== null && (
         <div className="gallery-backdrop" onClick={closeViewer}>
-          <div className="gallery-viewer" onClick={(e) => e.stopPropagation()}>
-            <div className="viewer-stage" onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
-              <button className="viewer-nav left" onClick={prev} aria-label="이전 이미지">
-                ‹
-              </button>
+            <div className="gallery-viewer" onClick={(e) => e.stopPropagation()}>
+              <div className="viewer-stage" onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
+                <button className="viewer-nav left" onClick={prev} aria-label="이전 이미지">
+                  ‹
+                </button>
               <div className="viewer-slide">
-                <img src={items[viewerIdx]} alt="" className="viewer-img" />
+                <div className="viewer-img-wrap">
+                  <Image
+                    src={items[viewerIdx]}
+                    alt=""
+                    width={1400}
+                    height={2000}
+                    sizes="100vw"
+                    className="viewer-img"
+                    priority
+                  />
+                </div>
               </div>
               <button className="viewer-nav right" onClick={next} aria-label="다음 이미지">
                 ›

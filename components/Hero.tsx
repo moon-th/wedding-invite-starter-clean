@@ -1,10 +1,10 @@
-import { driveSrc, formatDate, type InviteMeta } from '@/lib/utils';
+import { formatDate, type InviteMeta } from '@/lib/utils';
 
 export default function Hero({ meta }: { meta: InviteMeta }) {
   return (
     <section className="section">
       <div className="cover">
-        <img src={driveSrc(meta.coverId)} alt="커버 이미지" />
+        <img src="/src/image/main.jpg" alt="커버 이미지" />
       </div>
       <h1 className="title">{meta.title}</h1>
       <div className="subtitle">{formatDate(meta.date)} · {meta.place}</div>

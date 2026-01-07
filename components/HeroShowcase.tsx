@@ -1,4 +1,4 @@
-import { driveSrc, formatDateTime, type InviteMeta } from '@/lib/utils';
+import { formatDateTime, type InviteMeta } from '@/lib/utils';
 
 export default function HeroShowcase({ meta }: { meta: InviteMeta }) {
   return (
@@ -50,7 +50,7 @@ export default function HeroShowcase({ meta }: { meta: InviteMeta }) {
                 {/* 사진 */}
                 <div style={{position:'absolute', top:40, left:0, right:0, bottom:0, overflow:'hidden'}}>
                   <img
-                    src={driveSrc(meta.coverId)}
+                    src="/src/image/main.jpg"
                     alt="cover"
                     style={{width:'100%', height:'100%', objectFit:'cover'}}
                   />

@@ -1,5 +1,5 @@
 import dynamic from 'next/dynamic';
-import { formatDate, resolveImageSrc, type InviteMeta } from '@/lib/utils';
+import { formatDate, type InviteMeta } from '@/lib/utils';
 
 // 꽃잎은 랜덤 값 때문에 SSR 불일치가 날 수 있어 클라이언트 전용으로 로드
 const PetalEffect = dynamic(() => import('@/components/PetalEffect'), { ssr: false });
@@ -14,13 +14,13 @@ export default function MobileHero({ meta }: { meta: InviteMeta }) {
         style={{
           position: 'relative',
           overflow: 'hidden',
-      
+          paddingBottom: '1px',
         }}
       >
         {/* 커버 이미지 */}
         <img
           className="photo"
-          src="/src/image/top_back.png"
+          src="/src/image/main.jpg"
           alt=""
           loading="eager"
         />
@@ -32,7 +32,7 @@ export default function MobileHero({ meta }: { meta: InviteMeta }) {
             position: 'absolute',
             inset: 0,
             zIndex: 0,
-            
+            background: 'linear-gradient(180deg, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.25) 45%, rgba(0,0,0,0.1) 65%, rgba(0,0,0,0) 100%)',
           }}
         />
 
@@ -55,6 +55,7 @@ export default function MobileHero({ meta }: { meta: InviteMeta }) {
             {meta.place}
           </div>
         </div>
+        <div className="hero-bottom-fade" />
       </div>
     </section>
   );

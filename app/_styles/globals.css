@@ -154,7 +154,8 @@ a:hover{ text-decoration: underline; }
   justify-content: space-between;
   padding: 0 18px;
   z-index:3;
-  color:#1b2f4f;
+  color:#fff;
+  text-shadow: 0 2px 8px rgba(0,0,0,.35);
   font-weight:700;
   font-size: 13px;
   letter-spacing: 0.05em;
@@ -169,7 +170,7 @@ a:hover{ text-decoration: underline; }
 .hero .photo{
   width:100%; max-height: 860px;
   object-fit: cover; display:block; 
-  transform: scale(1.02);
+  
 }
 .hero .overlay{
   position:absolute; inset:0;
@@ -183,10 +184,24 @@ a:hover{ text-decoration: underline; }
 .hero-main-title{
   font-size: clamp(30px, 8vw, 46px);
   font-family: 'Satisfy', var(--font-title);
-  color:#1b2f4f;
+  color:#fff;
+  text-shadow: 0 4px 16px rgba(0,0,0,.4);
   font-weight: 700;
 }
-.hero .meta{ font-size: 14px; opacity:.95; }
+.hero .meta{ font-size: 14px; opacity:.95; color:#fff; text-shadow: 0 2px 10px rgba(0,0,0,.35); }
+
+.hero-bottom-fade{
+  position:absolute;
+  left:0; right:0; bottom:0;
+  height: 32%;
+  pointer-events:none;
+  background: linear-gradient(180deg,
+    rgba(255,255,255,0) 0%,
+    rgba(255,255,255,0.25) 30%,
+    rgba(255,245,245,0.85) 70%,
+    #ffffff 100%);
+  z-index:2;
+}
 
 /* ───────── Cards / Buttons / Key-Value ───────── */
 .card{
@@ -272,10 +287,17 @@ a:hover{ text-decoration: underline; }
   height:100%;
   cursor:pointer;
 }
+.gallery-img-wrap{
+  position:relative;
+  width:100%;
+}
 .gallery-img{
-  width:100%; height:100%; display:block;
-  aspect-ratio: 3 / 4; object-fit: cover;
-  background:#fff;             /* 썸네일 로딩 시도 흰색 유지 */
+  width:100%;
+  height:auto;
+  display:block;
+  object-fit: cover;
+  background:#fff;
+  border-radius: 14px;
 }
 @media (min-width: 768px){
   .gallery{
@@ -738,9 +760,15 @@ a:hover{ text-decoration: underline; }
   margin-top: 6px;
   touch-action: pan-x; /* 좌우 스와이프만 */
 }
+.viewer-img-wrap{
+  position: relative;
+  width: min(92vw, 760px);
+  margin: 0 auto;
+}
 .viewer-img{
-  width: 100%;
-  max-height: 82vh;
+  width:100%;
+  height:auto;
+  display:block;
   object-fit: contain;
   background:#fafafa;
   border-radius: 12px;
@@ -748,11 +776,6 @@ a:hover{ text-decoration: underline; }
 }
 .viewer-slide{
   width: 100%;
-  display: block;
-}
-.viewer-slide img{
-  width: 100%;
-  height: 100%;
   display: block;
 }
 .viewer-nav{
