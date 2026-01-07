@@ -221,6 +221,14 @@ a:hover{ text-decoration: underline; }
 .btn.ghost{
   background:#fff;             /* ★ 기존 color-mix → 흰색 */
 }
+.guestbook-delete.text{
+  background: none;
+  border: none;
+  padding: 0 4px;
+  color: #7a1e3a;
+  font-weight: 600;
+  cursor: pointer;
+}
 
 /* Sticky CTA */
 .stickybar{

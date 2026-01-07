@@ -1,13 +1,16 @@
 // components/Guestbook.tsx (전체 교체)
 'use client';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { InviteMeta } from '@/lib/utils';
 import { isDemo } from '@/lib/utils';
 import { db } from '@/lib/firebase';
 import { ensureAnonUid } from '@/lib/ensureAnon';
+import { auth } from '@/lib/firebase';
 import {
   addDoc,
   collection,
+  deleteDoc,
+  doc,
   getDocs,
   limit,
   orderBy,
@@ -16,38 +19,19 @@ import {
   Timestamp,
 } from 'firebase/firestore';
 
-type Entry = { name: string; message: string; time?: string };
+type Entry = { id?: string; name: string; message: string; time?: string; authorUid?: string };
 
 export default function Guestbook({ meta }: { meta: InviteMeta }) {
   const useFirestore = Boolean(process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID);
   const gasUrl = meta.gasGuestbookUrl || process.env.NEXT_PUBLIC_GUESTBOOK_URL || '';
   const inactive = !gasUrl && !useFirestore;
-  const sample: Entry[] = useMemo(
-    () => [
-      {
-        name: '한지은',
-        message: '맑고 따뜻한 사랑이 언제나 이어지길 바랍니다. 앞으로도 행복하세요 🤍',
-        time: '2025-04-24 20:38',
-      },
-      {
-        name: '송하윤',
-        message: '결혼 진심으로 축하해요💕 서로의 단짝 친구이자 사랑이 되길',
-        time: '2025-04-24 20:38',
-      },
-      {
-        name: '정해인',
-        message: '영원히 서로의 든든한 버팀목이 되어주세요. 진심으로 축하드려요 🥂',
-        time: '2025-04-24 20:38',
-      },
-    ],
-    [],
-  );
 
-  const [entries, setEntries] = useState<Entry[]>(sample);
+  const MAX_FETCH = 30; // 불러오는 개수 제한
+  const [entries, setEntries] = useState<Entry[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [expanded, setExpanded] = useState(false);
-  const [form, setForm] = useState({ name: '', message: '', password: '' });
+  const [visibleCount, setVisibleCount] = useState(5);
+  const [form, setForm] = useState({ name: '', message: '' });
   const [submitting, setSubmitting] = useState(false);
 
   const fetchEntries = async () => {
@@ -56,18 +40,20 @@ export default function Guestbook({ meta }: { meta: InviteMeta }) {
     setError(null);
     try {
       if (useFirestore) {
-        const q = query(collection(db, 'guestbook'), orderBy('createdAt', 'desc'), limit(100));
+        const q = query(collection(db, 'guestbook'), orderBy('createdAt', 'desc'), limit(MAX_FETCH));
         const snap = await getDocs(q);
         const mapped = snap.docs.map((d) => {
           const data = d.data() as any;
           const ts: Timestamp | undefined = data.createdAt;
           return {
+            id: d.id,
             name: data.name ?? '익명',
             message: data.message ?? '',
-            time: ts ? ts.toDate().toLocaleString() : '',
+            time: ts ? ts.toDate().toISOString().replace('T', ' ').slice(0, 16) : '',
+            authorUid: data.authorUid,
           };
         });
-        setEntries(mapped.length ? mapped : sample);
+        setEntries(mapped);
       } else {
         const url = new URL(gasUrl);
         if (!url.searchParams.has('method')) url.searchParams.set('method', 'list');
@@ -88,11 +74,11 @@ export default function Guestbook({ meta }: { meta: InviteMeta }) {
           message: it?.message ?? '',
           time: String(it?.timestamp ?? it?.created_at ?? it?.time ?? ''),
         }));
-        setEntries(mapped.length ? mapped : sample);
+        setEntries(mapped);
       }
     } catch (err) {
       setError('방명록을 불러오지 못했습니다.');
-      setEntries(sample);
+      setEntries([]);
     } finally {
       setLoading(false);
     }
@@ -103,8 +89,8 @@ export default function Guestbook({ meta }: { meta: InviteMeta }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inactive, gasUrl]);
 
-  const visible = expanded ? entries : entries.slice(0, 3);
-  const canExpand = !expanded && entries.length > visible.length;
+  const visible = entries.slice(0, visibleCount);
+  const canExpand = entries.length > visible.length;
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -135,19 +121,28 @@ export default function Guestbook({ meta }: { meta: InviteMeta }) {
           body: JSON.stringify({
             name: form.name.trim(),
             message: form.message.trim(),
-            password: form.password.trim(),
           }),
         });
         if (!res.ok) throw new Error(`status ${res.status}`);
       }
       // 저장 직후 바로 리스트 다시 불러오기
-      setForm({ name: '', message: '', password: '' });
+      setForm({ name: '', message: '' });
       await fetchEntries();
     } catch (err) {
       setError('작성에 실패했습니다. 잠시 후 다시 시도해주세요.');
     } finally {
       setSubmitting(false);
     }
+  };
+
+  const onDelete = async (entry: Entry) => {
+    if (!useFirestore || !entry.id || !entry.authorUid) return;
+    const uid = await ensureAnonUid();
+    if (uid !== entry.authorUid) return;
+    const confirmed = typeof window !== 'undefined' ? window.confirm('삭제하시겠습니까?') : false;
+    if (!confirmed) return;
+    await deleteDoc(doc(db, 'guestbook', entry.id));
+    setEntries((prev) => prev.filter((e) => e.id !== entry.id));
   };
 
   return (
@@ -158,7 +153,7 @@ export default function Guestbook({ meta }: { meta: InviteMeta }) {
         {inactive && (
           <p className="guestbook-note">
             {isDemo() ? '데모 모드입니다. ' : ''}
-            구글 시트 URL이 없어 예시만 표시됩니다.
+            방명록 설정이 없어 작성/조회가 비활성화되었습니다.
           </p>
         )}
       </div>
@@ -172,16 +167,6 @@ export default function Guestbook({ meta }: { meta: InviteMeta }) {
             onChange={onChange}
             disabled={submitting}
             className="guestbook-input"
-          />
-          <input
-            name="password"
-            placeholder="비밀번호(삭제용, 선택)"
-            value={form.password}
-            onChange={onChange}
-            disabled={submitting}
-            className="guestbook-input"
-            type="password"
-            autoComplete="off"
           />
           <textarea
             name="message"
@@ -205,6 +190,16 @@ export default function Guestbook({ meta }: { meta: InviteMeta }) {
           <article className="guestbook-card" key={idx}>
             <div className="guestbook-meta">
               <span className="guestbook-from">from. {item.name}</span>
+              {useFirestore && item.authorUid === auth.currentUser?.uid && item.id && (
+                <button
+                  type="button"
+                  aria-label="삭제"
+                  className="guestbook-delete text"
+                  onClick={() => onDelete(item)}
+                >
+                  삭제
+                </button>
+              )}
             </div>
             <div className="guestbook-divider" />
             <p className="guestbook-message">{item.message}</p>
@@ -214,7 +209,7 @@ export default function Guestbook({ meta }: { meta: InviteMeta }) {
       </div>
 
       {canExpand ? (
-        <button className="guestbook-more" type="button" onClick={() => setExpanded(true)}>
+        <button className="guestbook-more" type="button" onClick={() => setVisibleCount((v) => v + 5)}>
           더보기 ▼
         </button>
       ) : (
