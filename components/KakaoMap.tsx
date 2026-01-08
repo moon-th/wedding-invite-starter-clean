@@ -39,7 +39,16 @@ export default function KakaoMap({
       const defaultCenter = new maps.LatLng(fallbackLat, fallbackLng);
 
       if (!mapInstance.current) {
-        mapInstance.current = new maps.Map(mapRef.current, { center: defaultCenter, level: 3 });
+        mapInstance.current = new maps.Map(mapRef.current, {
+          center: defaultCenter,
+          level: 3,
+          draggable: false,
+          scrollwheel: false,
+          disableDoubleClick: true,
+          disableDoubleClickZoom: true,
+        });
+        mapInstance.current.setDraggable(false);
+        mapInstance.current.setZoomable(false);
         markerInstance.current = new maps.Marker({ position: defaultCenter });
         markerInstance.current.setMap(mapInstance.current);
       } else {
