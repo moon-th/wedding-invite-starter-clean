@@ -12,6 +12,7 @@ import Guestbook from '@/components/Guestbook';
 import { CopyButton } from '@/components/CopyButton';
 import { AboutUs } from '@/components/AboutUs';
 import KakaoMap from '@/components/KakaoMap';
+import RsvpPopup from '@/components/RsvpPopup';
 
 import AccountAccordion from '@/components/AccountAccordion';
 
@@ -184,6 +185,8 @@ export default async function InvitePage({ params }: { params: { slug: string } 
             </p>
           </div>
         </section>
+
+        <RsvpPopup />
 
         {/* 하단 고정 CTA */}
         <footer>© {new Date().getFullYear()} Wedding Invite · Static export</footer>

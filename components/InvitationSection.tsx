@@ -18,7 +18,7 @@ export function InvitationSection() {
           <p>
             저희의 작은 만남이 사랑으로 자라
             <br />
-            오늘 결혼이라는 약속으로 이어졌습니다.
+            결혼이라는 약속으로 이어졌습니다.
           </p>
 
           <p>
