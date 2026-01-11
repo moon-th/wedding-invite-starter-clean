@@ -150,7 +150,7 @@ export default function RsvpPopup() {
 
       {success && (
         <div className="rsvp-toast" onAnimationEnd={() => setSuccess(false)}>
-          참석 정보 전달 감사합니다.
+          참석 정보 감사합니다.
         </div>
       )}
     </>
