@@ -10,7 +10,7 @@ type Props = {
 export default function AccountAccordion({ groom, bride }: Props) {
   const [open, setOpen] = useState<{ groom: boolean; bride: boolean }>({
     groom: true,
-    bride: false,
+    bride: true,
   });
 
   async function copy(text: string) {

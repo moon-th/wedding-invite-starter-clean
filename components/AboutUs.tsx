@@ -26,19 +26,19 @@ export function AboutUs({ meta }: { meta: InviteMeta }) {
     {
       label: '신랑',
       name: groomName,
-      desc: '이아빠 · 박엄마의 아들',
+      desc: '문종호 · 황경숙의 아들',
       birth: '1992년 11월 12일',
       mbti: 'ISFJ',
-      tags: ['#감자', '#'],
+      tags: ['#감자', '#연하남'],
       photo: '/sample/moon.png',
     },
     {
       label: '신부',
       name: brideName,
-      desc: '이아빠 · 윤엄마의 딸',
+      desc: '노용수 · 조은숙의 딸',
       birth: '1990년 4월 14일',
       mbti: 'INFP',
-      tags: ['#스노우보드', '#캠핑'],
+      tags: ['#방울토마토', '#연상녀'],
       photo: '/sample/nari.jpeg',
     },
   ];

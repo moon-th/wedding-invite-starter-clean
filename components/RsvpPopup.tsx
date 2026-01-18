@@ -4,10 +4,10 @@ import { useState } from 'react';
 import { db } from '@/lib/firebase';
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { ensureAnonUid } from '@/lib/ensureAnon';
-import { getAuth } from 'firebase/auth';
 
 type Option = 'groom' | 'bride';
 type Attendance = 'yes' | 'no';
+type Bus = 'bus_yes' | 'bus_no';
 
 export default function RsvpPopup() {
   const [open, setOpen] = useState(false);
@@ -15,6 +15,8 @@ export default function RsvpPopup() {
   const [attend, setAttend] = useState<Attendance>('yes');
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
+  const [companions, setCompanions] = useState('1'); // 1~10
+  const [bus, setBus] = useState<Bus>('bus_no');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
@@ -22,12 +24,17 @@ export default function RsvpPopup() {
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     const cleanPhone = phone.replace(/\D/g, '');
+    const compNum = Number(companions);
     if (!name.trim() || !cleanPhone) {
       setError('성함과 연락처를 입력해 주세요.');
       return;
     }
     if (cleanPhone.length < 11) {
       setError('연락처는 11자리 이상 입력해 주세요.');
+      return;
+    }
+    if (Number.isNaN(compNum) || compNum < 0 || compNum > 10) {
+      setError('동행 인원은 0~10명 사이로 선택해 주세요.');
       return;
     }
     setSubmitting(true);
@@ -38,6 +45,8 @@ export default function RsvpPopup() {
         attend,
         name: name.trim(),
         phone: cleanPhone,
+        companions: compNum,
+        bus,
         authorUid: uid,
         createdAt: serverTimestamp(),
       });
@@ -107,6 +116,41 @@ export default function RsvpPopup() {
                     onClick={() => setAttend('no')}
                   >
                     불참
+                  </button>
+                </div>
+              </div>
+
+              <div className="rsvp-group">
+                <p className="rsvp-label">참석인원(본인포함)</p>
+                <select
+                  className="rsvp-input"
+                  value={companions}
+                  onChange={(e) => setCompanions(e.target.value)}
+                >
+                  {Array.from({ length: 10 }, (_, i) => String(i+1)).map((v) => (
+                    <option key={v} value={v}>
+                      {v}명
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="rsvp-group">
+                <p className="rsvp-label">셔틀버스(신도림에서 출발예정)</p>
+                <div className="rsvp-row">
+                  <button
+                    type="button"
+                    className={`rsvp-pill ${bus === 'bus_yes' ? 'active' : ''}`}
+                    onClick={() => setBus('bus_yes')}
+                  >
+                    탑승
+                  </button>
+                  <button
+                    type="button"
+                    className={`rsvp-pill ${bus === 'bus_no' ? 'active' : ''}`}
+                    onClick={() => setBus('bus_no')}
+                  >
+                    미탑승
                   </button>
                 </div>
               </div>

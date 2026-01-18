@@ -158,7 +158,7 @@ export default async function InvitePage({ params }: { params: { slug: string } 
 
         {/* (선택) 계좌 안내 – 필요 시 데이터 채워 사용 */}
         <AccountAccordion
-          groom={{ bank: '국민', no: '123456-01-000000', name: '문태환' }}
+          groom={{ bank: '신한', no: '110-337-366533', name: '문태환' }}
           bride={{ bank: '신한', no: '110-000-000000', name: '노나리' }}
         />
 
