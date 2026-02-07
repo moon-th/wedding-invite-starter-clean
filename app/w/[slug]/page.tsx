@@ -13,6 +13,8 @@ import { CopyButton } from '@/components/CopyButton';
 import { AboutUs } from '@/components/AboutUs';
 import KakaoMap from '@/components/KakaoMap';
 import RsvpPopup from '@/components/RsvpPopup';
+import InfoSlider from '@/components/InfoSlider';
+import ThankYouSection from '@/components/ThankYouSection';
 
 import AccountAccordion from '@/components/AccountAccordion';
 
@@ -166,27 +168,13 @@ export default async function InvitePage({ params }: { params: { slug: string } 
           <p className="eyebrow">Information</p>
           <h2 className="info-title">안내사항</h2>
 
-          <div className="info-card">
-            <div className="info-image">
-              <img src="/sample/info-placeholder.svg" alt="식사 안내 이미지" />
-            </div>
-            <h3 className="info-heading">연회 & 식사 안내</h3>
-            <p className="info-body">
-              식사는 결혼식 및 사진 촬영이 끝난 후
-              <br />
-              웨딩홀 2층에서 뷔페식으로 진행됩니다.
-            </p>
-            <p className="info-body">
-              한식 · 중식 · 양식 · 일식 등
-              <br />
-              다채로운 메뉴가 마련되어 있으니,
-              <br />
-              편안하게 즐겨 주시기 바랍니다.
-            </p>
-          </div>
+          <InfoSlider />
+
+          
         </section>
 
         <RsvpPopup />
+        <ThankYouSection />
 
         {/* 하단 고정 CTA */}
         <footer>© {new Date().getFullYear()} Wedding Invite · Static export</footer>
