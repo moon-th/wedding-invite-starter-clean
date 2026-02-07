@@ -1,7 +1,7 @@
 // components/KakaoShareButton.tsx
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 declare global {
   interface Window {
@@ -10,6 +10,8 @@ declare global {
 }
 
 export default function KakaoShareButton() {
+  const [ready, setReady] = useState(false);
+
   useEffect(() => {
     const key = process.env.NEXT_PUBLIC_KAKAO_JAVASCRIPT_KEY;
     if (!key) return;
@@ -23,17 +25,26 @@ export default function KakaoShareButton() {
       document.head.appendChild(script);
       script.onload = () => {
         if (!window.Kakao.isInitialized()) window.Kakao.init(key);
+        setReady(true);
       };
       return;
     }
 
     // 이미 로드되어 있으면 초기화만
     if (!window.Kakao.isInitialized()) window.Kakao.init(key);
+    setReady(true);
   }, []);
 
   const share = () => {
     const Kakao = window.Kakao;
-    if (!Kakao || !Kakao.Share) return;
+    if (!Kakao || !Kakao.Share) {
+      alert('카카오 SDK 로드 중입니다. 잠시 후 다시 시도해주세요.');
+      return;
+    }
+    if (!ready) {
+      alert('카카오 SDK 로드 중입니다. 잠시 후 다시 시도해주세요.');
+      return;
+    }
 
     const origin = typeof window !== 'undefined' ? window.location.origin : 'https://example.com';
     const link = { mobileWebUrl: origin, webUrl: origin };
