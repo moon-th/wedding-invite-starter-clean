@@ -11,46 +11,79 @@ declare global {
 
 export default function KakaoShareButton() {
   const [ready, setReady] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    const key = process.env.NEXT_PUBLIC_KAKAO_JAVASCRIPT_KEY;
-    if (!key) return;
+    const key = process.env.NEXT_PUBLIC_KAKAO_API_KEY;
+    if (!key) {
+      setError('카카오 키가 설정되지 않았습니다.');
+      setLoading(false);
+      return;
+    }
 
     const initKakao = () => {
       if (!window.Kakao) return;
-      if (!window.Kakao.isInitialized()) window.Kakao.init(key);
-      setReady(true);
+      try {
+        if (!window.Kakao.isInitialized()) window.Kakao.init(key);
+        setReady(true);
+        setError(null);
+      } catch (e) {
+        console.error('Kakao init failed', e);
+        setError('카카오 SDK 초기화에 실패했습니다.');
+      } finally {
+        setLoading(false);
+      }
     };
 
-    // SDK 로드
-    if (!window.Kakao) {
-      const scriptId = 'kakao-sdk';
-      const existing = document.getElementById(scriptId) as HTMLScriptElement | null;
-      if (existing) {
-        existing.addEventListener('load', initKakao, { once: true });
-      } else {
-        const script = document.createElement('script');
-        script.id = scriptId;
-        script.src = 'https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js';
-        script.integrity = 'sha384-TiCUE00FN8oL5CLRYXWp/aF3ScD8zLE+Agi+h9z3znMgInm9ph1vxEBpB5h6Fq7k';
-        script.crossOrigin = 'anonymous';
-        script.onload = initKakao;
-        document.head.appendChild(script);
-      }
-    } else {
+    const scriptId = 'kakao-sdk';
+    const existing = document.getElementById(scriptId) as HTMLScriptElement | null;
+
+    if (window.Kakao) {
       initKakao();
+      return;
     }
+
+    if (existing) {
+      if (existing.dataset.loaded === 'true') {
+        initKakao();
+      } else {
+        existing.addEventListener('load', initKakao, { once: true });
+        existing.addEventListener(
+          'error',
+          () => {
+            setError('카카오 SDK 로드에 실패했습니다.');
+            setLoading(false);
+          },
+          { once: true },
+        );
+      }
+      return;
+    }
+
+    const script = document.createElement('script');
+    script.id = scriptId;
+    script.src = 'https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js';
+    script.integrity = 'sha384-TiCUE00FN8oL5CLRYXWp/aF3ScD8zLE+Agi+h9z3znMgInm9ph1vxEBpB5h6Fq7k';
+    script.crossOrigin = 'anonymous';
+    script.dataset.loaded = 'false';
+    script.onload = () => {
+      script.dataset.loaded = 'true';
+      initKakao();
+    };
+    script.onerror = () => {
+      setError('카카오 SDK 로드에 실패했습니다.');
+      setLoading(false);
+    };
+    document.head.appendChild(script);
   }, []);
 
   const share = () => {
-    const Kakao = window.Kakao;
-    if (!Kakao || !Kakao.Share) {
-      alert('카카오 SDK 로드 중입니다. 잠시 후 다시 시도해주세요.');
-      return;
-    }
-    if (!ready) {
-      alert('카카오 SDK 로드 중입니다. 잠시 후 다시 시도해주세요.');
+    const Kakao = typeof window !== 'undefined' ? window.Kakao : null;
+    if (!Kakao || !Kakao.Share || !ready) {
+      const msg = error || '카카오 SDK 로드 중입니다. 잠시 후 다시 시도해주세요.';
+      alert(msg);
       return;
     }
 
@@ -76,7 +109,13 @@ export default function KakaoShareButton() {
   };
 
   return (
-    <button type="button" className="thankyou-share-btn" onClick={share}>
+    <button
+      type="button"
+      className="thankyou-share-btn"
+      onClick={share}
+      disabled={!ready || loading || !!error}
+      aria-disabled={!ready || loading || !!error}
+    >
       <span className="kakao-icon" aria-hidden="true">
         <svg
           stroke="currentColor"
