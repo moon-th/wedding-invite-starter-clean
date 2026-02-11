@@ -13,26 +13,34 @@ export default function KakaoShareButton() {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
     const key = process.env.NEXT_PUBLIC_KAKAO_JAVASCRIPT_KEY;
     if (!key) return;
 
+    const initKakao = () => {
+      if (!window.Kakao) return;
+      if (!window.Kakao.isInitialized()) window.Kakao.init(key);
+      setReady(true);
+    };
+
     // SDK 로드
     if (!window.Kakao) {
-      const script = document.createElement('script');
-      script.src = 'https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js';
-      script.integrity = 'sha384-TiCUE00FN8oL5CLRYXWp/aF3ScD8zLE+Agi+h9z3znMgInm9ph1vxEBpB5h6Fq7k';
-      script.crossOrigin = 'anonymous';
-      document.head.appendChild(script);
-      script.onload = () => {
-        if (!window.Kakao.isInitialized()) window.Kakao.init(key);
-        setReady(true);
-      };
-      return;
+      const scriptId = 'kakao-sdk';
+      const existing = document.getElementById(scriptId) as HTMLScriptElement | null;
+      if (existing) {
+        existing.addEventListener('load', initKakao, { once: true });
+      } else {
+        const script = document.createElement('script');
+        script.id = scriptId;
+        script.src = 'https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js';
+        script.integrity = 'sha384-TiCUE00FN8oL5CLRYXWp/aF3ScD8zLE+Agi+h9z3znMgInm9ph1vxEBpB5h6Fq7k';
+        script.crossOrigin = 'anonymous';
+        script.onload = initKakao;
+        document.head.appendChild(script);
+      }
+    } else {
+      initKakao();
     }
-
-    // 이미 로드되어 있으면 초기화만
-    if (!window.Kakao.isInitialized()) window.Kakao.init(key);
-    setReady(true);
   }, []);
 
   const share = () => {
