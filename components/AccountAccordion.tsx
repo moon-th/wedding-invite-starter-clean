@@ -2,12 +2,16 @@
 import { useState } from 'react';
 
 type AccountItem = { bank: string; no: string; name: string };
+type AccountInput = AccountItem | AccountItem[];
 type Props = {
-  groom?: AccountItem;
-  bride?: AccountItem;
+  groom?: AccountInput;
+  bride?: AccountInput;
 };
 
 export default function AccountAccordion({ groom, bride }: Props) {
+  const groomList: AccountItem[] = groom ? (Array.isArray(groom) ? groom : [groom]) : [];
+  const brideList: AccountItem[] = bride ? (Array.isArray(bride) ? bride : [bride]) : [];
+
   const [open, setOpen] = useState<{ groom: boolean; bride: boolean }>({
     groom: true,
     bride: true,
@@ -17,10 +21,10 @@ export default function AccountAccordion({ groom, bride }: Props) {
     try {
       await navigator.clipboard.writeText(text);
       alert('복사되었습니다.');
-    } catch {}
+  } catch {}
   }
 
-  if (!groom && !bride) return null;
+  if (!groomList.length && !brideList.length) return null;
 
   return (
     <section className="section anchor gift-section" id="gift">
@@ -37,7 +41,7 @@ export default function AccountAccordion({ groom, bride }: Props) {
       </div>
 
       <div className="gift-accordion">
-        {groom && (
+        {groomList.length > 0 && (
           <div className="gift-panel">
             <button
               className="gift-toggle"
@@ -49,13 +53,15 @@ export default function AccountAccordion({ groom, bride }: Props) {
             </button>
             {open.groom && (
               <div className="gift-list">
-                <AccountRow item={groom} onCopy={copy} />
+                {groomList.map((item) => (
+                  <AccountRow key={`${item.name}-${item.no}`} item={item} onCopy={copy} />
+                ))}
               </div>
             )}
           </div>
         )}
 
-        {bride && (
+        {brideList.length > 0 && (
           <div className="gift-panel">
             <button
               className="gift-toggle"
@@ -67,7 +73,9 @@ export default function AccountAccordion({ groom, bride }: Props) {
             </button>
             {open.bride && (
               <div className="gift-list">
-                <AccountRow item={bride} onCopy={copy} />
+                {brideList.map((item) => (
+                  <AccountRow key={`${item.name}-${item.no}`} item={item} onCopy={copy} />
+                ))}
               </div>
             )}
           </div>

@@ -160,8 +160,13 @@ export default async function InvitePage({ params }: { params: { slug: string } 
 
         {/* (선택) 계좌 안내 – 필요 시 데이터 채워 사용 */}
         <AccountAccordion
-          groom={{ bank: '신한', no: '110-337-366533', name: '문태환' }}
-          bride={{ bank: '신한', no: '110-000-000000', name: '노나리' }}
+          groom={[
+            { bank: '신한', no: '110-337-366533', name: '문태환' },
+            { bank: '농협', no: '302-1038-3952-61', name: '황경숙' }
+            ]}
+          bride={[
+            { bank: '신한', no: '110-000-000000', name: '노나리' }
+          ]}
         />
 
         <section className="section info-guide">
