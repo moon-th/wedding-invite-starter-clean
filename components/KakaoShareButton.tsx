@@ -95,7 +95,7 @@ export default function KakaoShareButton() {
     Kakao.Share.sendDefault({
       objectType: 'feed',
       content: {
-        title: '초대합니다',
+        title: '문태환 · 노나리 결혼식에 초대합니다.',
         description: '저희의 새로운 시작을 함께 해주세요.',
         imageUrl,
         link,
