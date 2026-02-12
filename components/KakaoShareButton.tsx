@@ -65,7 +65,8 @@ export default function KakaoShareButton() {
     const script = document.createElement('script');
     script.id = scriptId;
     script.src = 'https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js';
-    script.integrity = 'sha384-TiCUE00FN8oL5CLRYXWp/aF3ScD8zLE+Agi+h9z3znMgInm9ph1vxEBpB5h6Fq7k';
+    // 공식 배포본(2.7.2)의 현재 SRI 해시
+    script.integrity = 'sha384-TiCUE00h649CAMonG018J2ujOgDKW/kVWlChEuu4jK2vxfAAD0eZxzCKakxg55G4';
     script.crossOrigin = 'anonymous';
     script.dataset.loaded = 'false';
     script.onload = () => {
