@@ -13,18 +13,11 @@ export default function KakaoShareButton() {
   const [ready, setReady] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [inKakaoApp, setInKakaoApp] = useState(false);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    const isKakao = /KAKAOTALK/i.test(navigator.userAgent);
-    if (isKakao) {
-      setInKakaoApp(true);
-      setLoading(false);
-      return; // 인앱 브라우저에서는 공유 버튼 숨김/비활성
-    }
     // JS 키: env 이름이 다를 수 있어 두 가지를 모두 확인
-    const key = process.env.NEXT_PUBLIC_KAKAO_JAVASCRIPT_KEY || process.env.NEXT_PUBLIC_KAKAO_API_KEY;
+    const key =process.env.NEXT_PUBLIC_KAKAO_API_KEY;
     if (!key) {
       setError('카카오 키가 설정되지 않았습니다.');
       setLoading(false);
@@ -72,9 +65,9 @@ export default function KakaoShareButton() {
 
     const script = document.createElement('script');
     script.id = scriptId;
-    script.src = 'https://t1.kakaocdn.net/kakao_js_sdk/2.7.2/kakao.min.js';
+    script.src = 'https://t1.kakaocdn.net/kakao_js_sdk/2.7.7/kakao.min.js';
     // 공식 배포본(2.7.2)의 현재 SRI 해시
-    script.integrity = 'sha384-TiCUE00h649CAMonG018J2ujOgDKW/kVWlChEuu4jK2vxfAAD0eZxzCKakxg55G4';
+    script.integrity = 'sha384-tJkjbtDbvoxO+diRuDtwRO9JXR7pjWnfjfRn5ePUpl7e7RJCxKCwwnfqUAdXh53p';
     script.crossOrigin = 'anonymous';
     script.dataset.loaded = 'false';
     script.onload = () => {
@@ -89,11 +82,6 @@ export default function KakaoShareButton() {
   }, []);
 
   const share = () => {
-    if (inKakaoApp) {
-      alert('카카오 인앱 브라우저에서는 공유가 제한됩니다.\n외부 브라우저(크롬/사파리)에서 열어주세요.');
-      return;
-    }
-
     const Kakao = typeof window !== 'undefined' ? window.Kakao : null;
     if (!Kakao || !Kakao.Share || !ready) {
       const msg = error || '카카오 SDK 로드 중입니다. 잠시 후 다시 시도해주세요.';
@@ -102,10 +90,10 @@ export default function KakaoShareButton() {
     }
 
     // 카카오 개발자 콘솔에 등록된 도메인과 동일해야 함
-    const base = 'https://wedding-invite-starter-clean-9epw.vercel.app';
-    const shareUrl = `${base}/w/taehwan-nonari-2026-05-09/`;
+    const origin = window.location.origin;
+    const shareUrl = `${origin}/w/taehwan-nonari-2026-05-09`;
     const link = { mobileWebUrl: shareUrl, webUrl: shareUrl };
-    const imageUrl = `${base}/src/image/main.jpg`; // 공개 경로(https)여야 이미지가 보입니다.
+    const imageUrl = `${origin}/src/image/main.jpg`; // 공개 경로(https)여야 이미지가 보입니다.
 
    Kakao.Share.sendDefault({
   objectType: 'feed',
@@ -129,14 +117,6 @@ export default function KakaoShareButton() {
   ],
 });
   };
-
-  if (inKakaoApp) {
-    return (
-      <p className="thankyou-share-disabled">
-        카카오 인앱에서는 공유가 제한돼요. 크롬/사파리에서 열어주세요.
-      </p>
-    );
-  }
 
   return (
     <button
