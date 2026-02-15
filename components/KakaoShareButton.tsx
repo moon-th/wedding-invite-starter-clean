@@ -89,7 +89,8 @@ export default function KakaoShareButton() {
     }
 
     const origin = typeof window !== 'undefined' ? window.location.origin : 'https://example.com';
-    const link = { mobileWebUrl: origin, webUrl: origin };
+    const shareUrl = 'https://wedding-invite-starter-clean-9epw.vercel.app/w/taehwan-nonari-2026-05-09/';
+    const link = { mobileWebUrl: shareUrl, webUrl: shareUrl };
     const imageUrl = `${origin}/src/image/main.jpg`;
 
     Kakao.Share.sendDefault({
@@ -98,12 +99,12 @@ export default function KakaoShareButton() {
         title: '문태환 · 노나리 결혼식에 초대합니다.',
         description: '저희의 새로운 시작을 함께 해주세요.',
         imageUrl,
-        link : 'https://wedding-invite-starter-clean-9epw.vercel.app/w/taehwan-nonari-2026-05-09/',
+        link,
       },
       buttons: [
         {
           title: '청첩장 보기',
-          link : 'https://wedding-invite-starter-clean-9epw.vercel.app/w/taehwan-nonari-2026-05-09/',
+          link,
         },
       ],
     });
