@@ -103,16 +103,16 @@ export default function KakaoShareButton() {
     description: '저희의 새로운 시작을 함께 해주세요.',
     imageUrl,
     link: {
-      mobileWebUrl: shareUrl,
-      webUrl: shareUrl,
+      mobileWebUrl: "https://wedding-invite-starter-clean-9epw.vercel.app/",
+      webUrl: "https://wedding-invite-starter-clean-9epw.vercel.app/",
     },
   },
   buttons: [
     {
       title: '청첩장 보기',
       link: {
-        mobileWebUrl: shareUrl,
-        webUrl: shareUrl,
+        mobileWebUrl: "https://wedding-invite-starter-clean-9epw.vercel.app/",
+        webUrl: "https://wedding-invite-starter-clean-9epw.vercel.app/",
       },
     },
   ],
