@@ -16,7 +16,8 @@ export default function KakaoShareButton() {
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    const key = process.env.NEXT_PUBLIC_KAKAO_API_KEY;
+    // JS 키: env 이름이 다를 수 있어 두 가지를 모두 확인
+    const key = process.env.NEXT_PUBLIC_KAKAO_JAVASCRIPT_KEY || process.env.NEXT_PUBLIC_KAKAO_API_KEY;
     if (!key) {
       setError('카카오 키가 설정되지 않았습니다.');
       setLoading(false);
@@ -90,7 +91,7 @@ export default function KakaoShareButton() {
 
     // 카카오 개발자 콘솔에 등록된 도메인과 동일해야 함
     const SHARE_BASE = 'https://wedding-invite-starter-clean-9epw.vercel.app';
-    const shareUrl = `${SHARE_BASE}/w/taehwan-nonari-2026-05-09`;
+    const shareUrl = window.location.origin;
     const link = { mobileWebUrl: shareUrl, webUrl: shareUrl };
     const imageUrl = `${SHARE_BASE}/src/image/main.jpg`; // 공개 경로(https)여야 이미지가 보입니다.
 
