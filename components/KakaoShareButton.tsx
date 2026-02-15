@@ -95,22 +95,27 @@ export default function KakaoShareButton() {
     const link = { mobileWebUrl: shareUrl, webUrl: shareUrl };
     const imageUrl = `${origin}/src/image/main.jpg`; // 공개 경로(https)여야 이미지가 보입니다.
 
-    Kakao.Share.sendDefault({
-      objectType: 'feed',
-      content: {
-        title: '문태환 · 노나리 결혼식에 초대합니다.',
-        description: '저희의 새로운 시작을 함께 해주세요.',
-        imageUrl,
-        link,
-        buttonTitle: '청첩장 보기',
+   Kakao.Share.sendDefault({
+  objectType: 'feed',
+  content: {
+    title: '문태환 · 노나리 결혼식에 초대합니다.',
+    description: '저희의 새로운 시작을 함께 해주세요.',
+    imageUrl,
+    link: {
+      mobileWebUrl: shareUrl,
+      webUrl: shareUrl,
+    },
+  },
+  buttons: [
+    {
+      title: '청첩장 보기',
+      link: {
+        mobileWebUrl: shareUrl,
+        webUrl: shareUrl,
       },
-      buttons: [
-        {
-          title: '청첩장 보기',
-          link,
-        },
-      ],
-    });
+    },
+  ],
+});
   };
 
   return (
