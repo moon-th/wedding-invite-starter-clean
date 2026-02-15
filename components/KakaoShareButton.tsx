@@ -96,6 +96,7 @@ export default function KakaoShareButton() {
     const imageUrl = `${origin}/src/image/main.jpg`; // 공개 경로(https)여야 이미지가 보입니다.
 
    Kakao.Share.sendDefault({
+  container: '#kakaotalk-sharing-btn',
   objectType: 'feed',
   content: {
     title: '문태환 · 노나리 결혼식에 초대합니다.',
