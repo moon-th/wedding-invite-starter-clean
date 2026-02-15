@@ -93,7 +93,7 @@ export default function KakaoShareButton() {
     const origin = window.location.origin;
     const shareUrl = `${origin}/w/taehwan-nonari-2026-05-09`;
     const link = { mobileWebUrl: shareUrl, webUrl: shareUrl };
-    const imageUrl = `${origin}/src/image/main.jpg`; // 공개 경로(https)여야 이미지가 보입니다.
+    const imageUrl = `${origin}/src/image/main.webp`; // 공개 경로(https)여야 이미지가 보입니다.
 
    Kakao.Share.sendDefault({
   objectType: 'feed',

@@ -50,7 +50,7 @@ export default function HeroShowcase({ meta }: { meta: InviteMeta }) {
                 {/* 사진 */}
                 <div style={{position:'absolute', top:40, left:0, right:0, bottom:0, overflow:'hidden'}}>
                   <img
-                    src="/src/image/main.jpg"
+                    src="/src/image/main.webp"
                     alt="cover"
                     style={{width:'100%', height:'100%', objectFit:'cover'}}
                   />
