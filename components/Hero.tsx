@@ -4,7 +4,7 @@ export default function Hero({ meta }: { meta: InviteMeta }) {
   return (
     <section className="section">
       <div className="cover">
-        <img src="/src/image/main.jpg" alt="커버 이미지" />
+        <img src="/src/image/main.webp" alt="커버 이미지" />
       </div>
       <h1 className="title">{meta.title}</h1>
       <div className="subtitle">{formatDate(meta.date)} · {meta.place}</div>
