@@ -102,6 +102,7 @@ export default function KakaoShareButton() {
         description: '저희의 새로운 시작을 함께 해주세요.',
         imageUrl,
         link,
+        buttonTitle: '청첩장 보기',
       },
       buttons: [
         {
