@@ -13,9 +13,16 @@ export default function KakaoShareButton() {
   const [ready, setReady] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [inKakaoApp, setInKakaoApp] = useState(false);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
+    const isKakao = /KAKAOTALK/i.test(navigator.userAgent);
+    if (isKakao) {
+      setInKakaoApp(true);
+      setLoading(false);
+      return; // 인앱 브라우저에서는 공유 버튼 숨김/비활성
+    }
     // JS 키: env 이름이 다를 수 있어 두 가지를 모두 확인
     const key = process.env.NEXT_PUBLIC_KAKAO_JAVASCRIPT_KEY || process.env.NEXT_PUBLIC_KAKAO_API_KEY;
     if (!key) {
@@ -82,6 +89,11 @@ export default function KakaoShareButton() {
   }, []);
 
   const share = () => {
+    if (inKakaoApp) {
+      alert('카카오 인앱 브라우저에서는 공유가 제한됩니다.\n외부 브라우저(크롬/사파리)에서 열어주세요.');
+      return;
+    }
+
     const Kakao = typeof window !== 'undefined' ? window.Kakao : null;
     if (!Kakao || !Kakao.Share || !ready) {
       const msg = error || '카카오 SDK 로드 중입니다. 잠시 후 다시 시도해주세요.';
@@ -90,13 +102,12 @@ export default function KakaoShareButton() {
     }
 
     // 카카오 개발자 콘솔에 등록된 도메인과 동일해야 함
-    const origin = window.location.origin;
-    const shareUrl = `${origin}/w/taehwan-nonari-2026-05-09`;
+    const base = 'https://wedding-invite-starter-clean-9epw.vercel.app';
+    const shareUrl = `${base}/w/taehwan-nonari-2026-05-09/`;
     const link = { mobileWebUrl: shareUrl, webUrl: shareUrl };
-    const imageUrl = `${origin}/src/image/main.jpg`; // 공개 경로(https)여야 이미지가 보입니다.
+    const imageUrl = `${base}/src/image/main.jpg`; // 공개 경로(https)여야 이미지가 보입니다.
 
    Kakao.Share.sendDefault({
-  container: '#kakaotalk-sharing-btn',
   objectType: 'feed',
   content: {
     title: '문태환 · 노나리 결혼식에 초대합니다.',
@@ -107,24 +118,25 @@ export default function KakaoShareButton() {
       webUrl: shareUrl,
     },
   },
-buttons: [
-      {
-        title: '웹으로 보기',
-        link: {
-          mobileWebUrl: 'https://developers.kakao.com',
-          webUrl: 'https://developers.kakao.com',
-        },
+  buttons: [
+    {
+      title: '청첩장 보기',
+      link: {
+        mobileWebUrl: shareUrl,
+        webUrl: shareUrl,
       },
-      {
-        title: '앱으로 보기',
-        link: {
-          mobileWebUrl: 'https://developers.kakao.com',
-          webUrl: 'https://developers.kakao.com',
-        },
-      },
-    ],
+    },
+  ],
 });
   };
+
+  if (inKakaoApp) {
+    return (
+      <p className="thankyou-share-disabled">
+        카카오 인앱에서는 공유가 제한돼요. 크롬/사파리에서 열어주세요.
+      </p>
+    );
+  }
 
   return (
     <button
