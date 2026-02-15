@@ -5,7 +5,7 @@ import { useState } from 'react';
 import LightboxModal from './Lightbox';
 
 export default function Gallery({ imageIds = [] }: { imageIds?: string[] }) {
-  const items = Array.from({ length: 20 }, (_, i) => `/src/image_webp/${i + 1}.webp`);
+  const items = Array.from({ length: 4 }, (_, i) => `/src/image_webp/${i + 1}.webp`);
   const images = items.map((src, i) => ({ src, alt: `gallery-${i + 1}` }));
   const [open, setOpen] = useState(false);
   const [idx, setIdx] = useState(0);
