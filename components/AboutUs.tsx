@@ -30,7 +30,7 @@ export function AboutUs({ meta }: { meta: InviteMeta }) {
       birth: '1992년 11월 12일',
       mbti: 'ISFJ',
       tags: ['#감자', '#연하남'],
-      photo: '/sample/moon.png',
+      photo: '/sample/moon.webp',
     },
     {
       label: '신부',
@@ -39,7 +39,7 @@ export function AboutUs({ meta }: { meta: InviteMeta }) {
       birth: '1990년 4월 14일',
       mbti: 'INFP',
       tags: ['#방울토마토', '#연상녀'],
-      photo: '/sample/nari.jpeg',
+      photo: '/sample/nari.webp',
     },
   ];
 
