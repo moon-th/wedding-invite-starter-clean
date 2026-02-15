@@ -107,15 +107,22 @@ export default function KakaoShareButton() {
       webUrl: shareUrl,
     },
   },
-  buttons: [
-    {
-      title: '청첩장 보기',
-      link: {
-        mobileWebUrl: shareUrl,
-        webUrl: shareUrl,
+buttons: [
+      {
+        title: '웹으로 보기',
+        link: {
+          mobileWebUrl: 'https://developers.kakao.com',
+          webUrl: 'https://developers.kakao.com',
+        },
       },
-    },
-  ],
+      {
+        title: '앱으로 보기',
+        link: {
+          mobileWebUrl: 'https://developers.kakao.com',
+          webUrl: 'https://developers.kakao.com',
+        },
+      },
+    ],
 });
   };
 
