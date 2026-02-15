@@ -90,10 +90,10 @@ export default function KakaoShareButton() {
     }
 
     // 카카오 개발자 콘솔에 등록된 도메인과 동일해야 함
-    const SHARE_BASE = 'https://wedding-invite-starter-clean-9epw.vercel.app';
-    const shareUrl = window.location.origin;
+    const origin = window.location.origin;
+    const shareUrl = `${origin}/w/taehwan-nonari-2026-05-09`;
     const link = { mobileWebUrl: shareUrl, webUrl: shareUrl };
-    const imageUrl = `${SHARE_BASE}/src/image/main.jpg`; // 공개 경로(https)여야 이미지가 보입니다.
+    const imageUrl = `${origin}/src/image/main.jpg`; // 공개 경로(https)여야 이미지가 보입니다.
 
     Kakao.Share.sendDefault({
       objectType: 'feed',
