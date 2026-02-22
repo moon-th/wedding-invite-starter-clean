@@ -170,15 +170,6 @@ export default async function InvitePage({ params }: { params: { slug: string } 
 
         <div className="divider" />
 
-        <section className="section info-guide">
-          <p className="eyebrow">Information</p>
-          <h2 className="info-title">안내사항</h2>
-
-          <InfoSlider />
-
-          
-        </section>
-
         <PhotoUploadSection slug={meta.slug} />
 
         {/* (선택) 계좌 안내 – 필요 시 데이터 채워 사용 */}
@@ -186,6 +177,13 @@ export default async function InvitePage({ params }: { params: { slug: string } 
           groom={meta.accounts?.groom}
           bride={meta.accounts?.bride}
         />
+
+        <section className="section info-guide">
+          <p className="eyebrow">Information</p>
+          <h2 className="info-title">안내사항</h2>
+
+          <InfoSlider />
+        </section>
 
         <RsvpPopup />
         <ThankYouSection />
