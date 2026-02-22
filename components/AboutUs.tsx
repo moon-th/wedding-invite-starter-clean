@@ -44,7 +44,7 @@ export function AboutUs({ meta }: { meta: InviteMeta }) {
   ];
 
   return (
-    <section className="section about-section">
+    <section className="section about-section anchor" id="about">
       <p className="eyebrow">About Us</p>
       <h2 className="about-title">저희를 소개합니다</h2>
 

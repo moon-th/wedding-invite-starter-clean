@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 import { storage } from '@/lib/firebase';
 
@@ -21,6 +21,7 @@ export default function PhotoUploadSection({ slug }: { slug: string }) {
   const [progress, setProgress] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const canUseUpload = Boolean(process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID && process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET);
 
@@ -107,9 +108,9 @@ export default function PhotoUploadSection({ slug }: { slug: string }) {
   return (
     <section className="section anchor photo-upload-section" id="photo-upload">
       <div className="photo-upload-header">
-        <p className="eyebrow">Upload</p>
+        <p className="photo-upload-icon" aria-hidden="true">📷</p>
         <h2 className="photo-upload-title">사진 업로드</h2>
-        <p className="photo-upload-desc">성함과 사진을 함께 올려주시면 앨범에 추가됩니다.</p>
+        <p className="photo-upload-desc">신랑·신부의 행복한 순간을 담아주세요.</p>
       </div>
 
       {!canUseUpload && (
@@ -127,14 +128,43 @@ export default function PhotoUploadSection({ slug }: { slug: string }) {
             maxLength={20}
             disabled={submitting}
           />
-          <input
-            className="photo-upload-file"
-            type="file"
-            accept=".jpg,.jpeg,.png,.webp,.avif"
-            onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-            required
-            disabled={submitting}
-          />
+          <div className="photo-upload-file-row">
+            <input
+              ref={fileInputRef}
+              className="photo-upload-file-hidden"
+              type="file"
+              accept=".jpg,.jpeg,.png,.webp,.avif"
+              onChange={(e) => {
+                setFile(e.target.files?.[0] ?? null);
+                setError(null);
+              }}
+              disabled={submitting}
+            />
+            <button
+              type="button"
+              className="photo-upload-file-btn"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={submitting}
+            >
+              파일 선택
+            </button>
+            <span className={`photo-upload-file-name ${file ? 'selected' : ''}`}>
+              {file ? file.name : '선택된 파일 없음'}
+            </span>
+            {file && (
+              <button
+                type="button"
+                className="photo-upload-file-clear"
+                onClick={() => {
+                  setFile(null);
+                  if (fileInputRef.current) fileInputRef.current.value = '';
+                }}
+                disabled={submitting}
+              >
+                지우기
+              </button>
+            )}
+          </div>
           <button className="photo-upload-btn" type="submit" disabled={submitting}>
             {submitting ? '업로드 중...' : '사진 올리기'}
           </button>

@@ -53,7 +53,7 @@ export function WeddingCalendar({ year, month, weddingDay }: WeddingCalendarProp
   const fullLabel = `${year}년 ${month}월 ${weddingDay}일 ${weddingWeekdayLabel}`;
 
   return (
-    <section className="calendar-section">
+    <section className="calendar-section anchor" id="calendar">
       <div className="calendar-inner">
         <p className="eyebrow">Wedding Day</p>
         <p className="calendar-title">{fullLabel}</p>

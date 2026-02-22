@@ -17,6 +17,7 @@ import RsvpPopup from '@/components/RsvpPopup';
 import InfoSlider from '@/components/InfoSlider';
 import ThankYouSection from '@/components/ThankYouSection';
 import PhotoUploadSection from '@/components/PhotoUploadSection';
+import SectionNav from '@/components/SectionNav';
 
 import AccountAccordion from '@/components/AccountAccordion';
 
@@ -77,6 +78,7 @@ export default async function InvitePage({ params }: { params: { slug: string } 
 
   return (
     <>
+      <SectionNav />
       {/* 모바일 우선 히어로(폰 프레임 없이 바로 시작) */}
       <MobileHero meta={meta} />
       <div className="hero-fade" aria-hidden="true" />
@@ -178,7 +180,7 @@ export default async function InvitePage({ params }: { params: { slug: string } 
           bride={meta.accounts?.bride}
         />
 
-        <section className="section info-guide">
+        <section className="section info-guide anchor" id="guide">
           <p className="eyebrow">Information</p>
           <h2 className="info-title">안내사항</h2>
 
