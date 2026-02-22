@@ -1,5 +1,5 @@
 {
-  "slug": "taehwan-nonari-2026-05-09",
+  "slug": "taehwan-nonari2026-05-09",
   "title": "문태환 · 노나리",
   "date": "2026-05-09",
   "time": "14:00",
@@ -10,8 +10,7 @@
   "gasGuestbookUrl": "https://script.google.com/macros/s/AKfycbwJlgP3nVyE0_rkCc-tvnemOMb7vcy9eklTf0UhpHBIINZarJrLTad9WC891AeAfAng/exec",
   "accounts": {
     "groom": [
-      { "bank": "신한", "no": "110-337-366533", "name": "문태환" },
-      { "bank": "농협", "no": "302-1038-3952-61", "name": "황경숙" }
+      { "bank": "신한", "no": "110-337-366533", "name": "문태환" }
     ],
     "bride": [
       { "bank": "신한", "no": "110-000-000000", "name": "노나리" }

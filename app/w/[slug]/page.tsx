@@ -5,6 +5,7 @@ import fs from 'node:fs/promises';
 import { formatDate, type InviteMeta } from '@/lib/utils';
 
 import MobileHero from '@/components/MobileHero';
+import TopImageSection from '@/components/TopImageSection';
 import { InvitationSection } from '@/components/InvitationSection';
 import { WeddingCalendar } from '@/components/WeddingCalendar';
 import Gallery from '@/components/Gallery';
@@ -15,6 +16,7 @@ import KakaoMap from '@/components/KakaoMap';
 import RsvpPopup from '@/components/RsvpPopup';
 import InfoSlider from '@/components/InfoSlider';
 import ThankYouSection from '@/components/ThankYouSection';
+import PhotoUploadSection from '@/components/PhotoUploadSection';
 
 import AccountAccordion from '@/components/AccountAccordion';
 
@@ -42,10 +44,20 @@ async function loadMeta(slug: string): Promise<InviteMeta | null> {
   }
 }
 
+async function loadGalleryImages(): Promise<string[]> {
+  const dir = path.join(process.cwd(), 'public', 'src', 'image_webp');
+  const files = await fs.readdir(dir).catch(() => []);
+  return files
+    .filter((name) => /\.(webp|jpg|jpeg|png)$/i.test(name))
+    .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))
+    .map((name) => `/src/image_webp/${name}`);
+}
+
 // ───────────────────────────────────────────────────────────
 // 페이지
 export default async function InvitePage({ params }: { params: { slug: string } }) {
   const meta = await loadMeta(params.slug);
+  const galleryImages = await loadGalleryImages();
 
   if (!meta) {
     return (
@@ -85,7 +97,7 @@ export default async function InvitePage({ params }: { params: { slug: string } 
             <p className="eyebrow">gallery</p>
             <h2 className="gallery-title">갤러리</h2>
           </div>
-          <Gallery imageIds={meta.imageIds} />
+          <Gallery imageIds={galleryImages} />
         </section>
 
         <div className="divider" />
@@ -158,17 +170,6 @@ export default async function InvitePage({ params }: { params: { slug: string } 
 
         <div className="divider" />
 
-        {/* (선택) 계좌 안내 – 필요 시 데이터 채워 사용 */}
-        <AccountAccordion
-          groom={[
-            { bank: '신한', no: '110-337-366533', name: '문태환' },
-            { bank: '농협', no: '302-1038-3952-61', name: '황경숙' }
-            ]}
-          bride={[
-            { bank: '신한', no: '110-000-000000', name: '노나리' }
-          ]}
-        />
-
         <section className="section info-guide">
           <p className="eyebrow">Information</p>
           <h2 className="info-title">안내사항</h2>
@@ -177,6 +178,14 @@ export default async function InvitePage({ params }: { params: { slug: string } 
 
           
         </section>
+
+        <PhotoUploadSection slug={meta.slug} />
+
+        {/* (선택) 계좌 안내 – 필요 시 데이터 채워 사용 */}
+        <AccountAccordion
+          groom={meta.accounts?.groom}
+          bride={meta.accounts?.bride}
+        />
 
         <RsvpPopup />
         <ThankYouSection />

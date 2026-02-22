@@ -20,13 +20,13 @@ export default function MobileHero({ meta }: { meta: InviteMeta }) {
         {/* 커버 이미지 */}
         <img
           className="photo"
-          src="/src/image/main.webp"
+          src="/src/image/main.jpeg"
           alt=""
           loading="eager"
         />
 
         {/* 어둡게 오버레이 (z-index:0) */}
-        <div
+        {/* <div
           className="overlay"
           style={{
             position: 'absolute',
@@ -34,19 +34,19 @@ export default function MobileHero({ meta }: { meta: InviteMeta }) {
             zIndex: 0,
             background: 'linear-gradient(180deg, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.25) 45%, rgba(0,0,0,0.1) 65%, rgba(0,0,0,0) 100%)',
           }}
-        />
+        /> */}
 
         {/* 꽃잎 효과 (z-index:1). 이미지 경로는 public/src/image 아래 사용 */}
         <PetalEffect src="/src/image/petal.png" count={22} duration={[4, 7]} drift={-40} />
 
         {/* 상단 이름/일시 바 */}
-        <div className="hero-topbar">
+        {/* <div className="hero-topbar">
           <span className="hero-name">{leftName}</span>
           <span className="hero-date">
             {formatDate(meta.date)}{meta.time ? ` ${meta.time}` : ''}
           </span>
           <span className="hero-name">{rightName}</span>
-        </div>
+        </div> */}
 
         {/* 레전드 카드 (z-index:2) */}
         <div className="legend">

@@ -1,4 +1,10 @@
 // lib/utils.ts
+export type AccountItem = {
+  bank: string;
+  no: string;
+  name: string;
+};
+
 export type InviteMeta = {
   slug: string;
   title: string;
@@ -9,6 +15,10 @@ export type InviteMeta = {
   coverId: string;
   imageIds: string[];
   gasGuestbookUrl?: string;
+  accounts?: {
+    groom?: AccountItem[];
+    bride?: AccountItem[];
+  };
   theme?: string;
   active: boolean;
 };
