@@ -876,6 +876,61 @@ a:hover{ text-decoration: underline; }
   padding: 10px 10px;
   font-size: 12px;
 }
+.photo-upload-selected-wrap{
+  width: 100%;
+}
+.photo-upload-selected-head{
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 2px;
+}
+.photo-upload-selected-count{
+  color:#777;
+  font-size: 12px;
+}
+.photo-upload-tag-list{
+  margin-top: 6px;
+  display:flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.photo-upload-tag{
+  display:flex;
+  align-items:center;
+  gap: 8px;
+  width:100%;
+  border:1px solid #e5d9de;
+  background:#fff;
+  color:#555;
+  border-radius: 6px;
+  padding: 9px 10px;
+  font-size: 12px;
+  line-height: 1.4;
+}
+.photo-upload-tag-text{
+  flex:1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.photo-upload-tag-remove{
+  flex: 0 0 auto;
+  border: 0;
+  border-left: 1px solid #ece3e7;
+  background: transparent;
+  color:#777;
+  font-size: 12px;
+  margin-left: 6px;
+  padding: 0 0 0 10px;
+  cursor: pointer;
+}
+.photo-upload-tag-remove:disabled{
+  opacity: .55;
+  cursor: default;
+}
 .photo-upload-btn{
   border:0;
   border-radius: 6px;

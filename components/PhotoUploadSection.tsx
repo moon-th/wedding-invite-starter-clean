@@ -13,10 +13,11 @@ const ALLOWED_MIME_TYPES = new Set([
 ]);
 
 const ALLOWED_EXTENSIONS = new Set(['jpg', 'jpeg', 'png', 'webp', 'avif']);
+const MAX_FILES_PER_UPLOAD = 5;
 
 export default function PhotoUploadSection({ slug }: { slug: string }) {
   const [name, setName] = useState('');
-  const [file, setFile] = useState<File | null>(null);
+  const [files, setFiles] = useState<File[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [progress, setProgress] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -35,19 +36,25 @@ export default function PhotoUploadSection({ slug }: { slug: string }) {
       setError('이름을 입력해 주세요.');
       return;
     }
-    if (!file) {
+    if (!files.length) {
       setError('사진 파일을 선택해 주세요.');
       return;
     }
-    const ext = file.name.includes('.') ? file.name.split('.').pop() : '';
-    const safeExt = (ext || '').toLowerCase().replace(/[^a-z0-9]/g, '');
-    if (!ALLOWED_MIME_TYPES.has(file.type) || !ALLOWED_EXTENSIONS.has(safeExt)) {
-      setError('jpg, jpeg, png, webp, avif 파일만 업로드할 수 있습니다.');
+    if (files.length > MAX_FILES_PER_UPLOAD) {
+      setError(`한 번에 최대 ${MAX_FILES_PER_UPLOAD}장까지 업로드할 수 있습니다.`);
       return;
     }
-    if (file.size > 10 * 1024 * 1024) {
-      setError('파일 크기는 10MB 이하만 가능합니다.');
-      return;
+    for (const file of files) {
+      const ext = file.name.includes('.') ? file.name.split('.').pop() : '';
+      const safeExt = (ext || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+      if (!ALLOWED_MIME_TYPES.has(file.type) || !ALLOWED_EXTENSIONS.has(safeExt)) {
+        setError('jpg, jpeg, png, webp, avif 파일만 업로드할 수 있습니다.');
+        return;
+      }
+      if (file.size > 10 * 1024 * 1024) {
+        setError('파일 크기는 10MB 이하만 가능합니다.');
+        return;
+      }
     }
 
     setSubmitting(true);
@@ -56,40 +63,49 @@ export default function PhotoUploadSection({ slug }: { slug: string }) {
     setSuccess(null);
 
     try {
-      const suffix =
-        typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
-          ? crypto.randomUUID()
-          : Math.random().toString(36).slice(2, 10);
-      const filePath = `invites/${slug}/uploads/${Date.now()}-${suffix}.${safeExt}`;
-      const storageRef = ref(storage, filePath);
+      const totalBytes = files.reduce((sum, file) => sum + file.size, 0);
+      let doneBytes = 0;
 
-      const uploadedRef = await new Promise<typeof storageRef>((resolve, reject) => {
-        const uploadTask = uploadBytesResumable(storageRef, file, {
-          contentType: file.type,
-          customMetadata: {
-            uploaderName: name.trim(),
-            inviteSlug: slug,
-          },
+      for (const file of files) {
+        const ext = file.name.includes('.') ? file.name.split('.').pop() : '';
+        const safeExt = (ext || 'jpg').toLowerCase().replace(/[^a-z0-9]/g, '') || 'jpg';
+        const suffix =
+          typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
+            ? crypto.randomUUID()
+            : Math.random().toString(36).slice(2, 10);
+        const filePath = `invites/${slug}/uploads/${Date.now()}-${suffix}.${safeExt}`;
+        const storageRef = ref(storage, filePath);
+
+        const uploadedRef = await new Promise<typeof storageRef>((resolve, reject) => {
+          const uploadTask = uploadBytesResumable(storageRef, file, {
+            contentType: file.type,
+            customMetadata: {
+              uploaderName: name.trim(),
+              inviteSlug: slug,
+            },
+          });
+
+          uploadTask.on(
+            'state_changed',
+            (snapshot) => {
+              if (!totalBytes) return;
+              const totalProgress = ((doneBytes + snapshot.bytesTransferred) / totalBytes) * 100;
+              setProgress(Math.min(100, Math.max(0, Math.round(totalProgress))));
+            },
+            (err) => reject(err),
+            () => resolve(uploadTask.snapshot.ref),
+          );
         });
 
-        uploadTask.on(
-          'state_changed',
-          (snapshot) => {
-            if (!snapshot.totalBytes) return;
-            const ratio = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            setProgress(Math.min(100, Math.max(0, Math.round(ratio))));
-          },
-          (err) => reject(err),
-          () => resolve(uploadTask.snapshot.ref),
-        );
-      });
-
-      await getDownloadURL(uploadedRef);
+        await getDownloadURL(uploadedRef);
+        doneBytes += file.size;
+      }
 
       setName('');
-      setFile(null);
+      setFiles([]);
+      if (fileInputRef.current) fileInputRef.current.value = '';
       setProgress(100);
-      setSuccess('사진이 업로드되었습니다.');
+      setSuccess(`${files.length}장 업로드되었습니다.`);
     } catch (e: any) {
       console.error('photo upload submit error', e);
       if (e?.code === 'storage/no-default-bucket') {
@@ -134,9 +150,29 @@ export default function PhotoUploadSection({ slug }: { slug: string }) {
               className="photo-upload-file-hidden"
               type="file"
               accept=".jpg,.jpeg,.png,.webp,.avif"
+              multiple
               onChange={(e) => {
-                setFile(e.target.files?.[0] ?? null);
-                setError(null);
+                const picked = Array.from(e.target.files ?? []);
+                if (!picked.length) return;
+                setFiles((prev) => {
+                  const merged = [...prev];
+                  for (const file of picked) {
+                    const alreadyAdded = merged.some(
+                      (f) =>
+                        f.name === file.name &&
+                        f.size === file.size &&
+                        f.lastModified === file.lastModified,
+                    );
+                    if (!alreadyAdded) merged.push(file);
+                  }
+                  if (merged.length > MAX_FILES_PER_UPLOAD) {
+                    setError(`최대 ${MAX_FILES_PER_UPLOAD}장까지 선택됩니다. 앞 ${MAX_FILES_PER_UPLOAD}장만 적용했어요.`);
+                    return merged.slice(0, MAX_FILES_PER_UPLOAD);
+                  }
+                  setError(null);
+                  return merged;
+                });
+                if (fileInputRef.current) fileInputRef.current.value = '';
               }}
               disabled={submitting}
             />
@@ -148,23 +184,39 @@ export default function PhotoUploadSection({ slug }: { slug: string }) {
             >
               파일 선택
             </button>
-            <span className={`photo-upload-file-name ${file ? 'selected' : ''}`}>
-              {file ? file.name : '선택된 파일 없음'}
+            <span className={`photo-upload-file-name ${files.length ? 'selected' : ''}`}>
+              {files.length
+                ? `${files.length}개 파일 선택됨`
+                : `선택된 파일 없음 (최대 ${MAX_FILES_PER_UPLOAD}장)`}
             </span>
-            {file && (
-              <button
-                type="button"
-                className="photo-upload-file-clear"
-                onClick={() => {
-                  setFile(null);
-                  if (fileInputRef.current) fileInputRef.current.value = '';
-                }}
-                disabled={submitting}
-              >
-                지우기
-              </button>
-            )}
           </div>
+          {files.length > 0 && (
+            <div className="photo-upload-selected-wrap">
+              <div className="photo-upload-selected-head">
+                <span className="photo-upload-selected-count">선택된 파일</span>
+              </div>
+              <div className="photo-upload-tag-list" aria-live="polite">
+                {files.map((file, idx) => (
+                  <div className="photo-upload-tag" key={`${file.name}-${file.lastModified}-${idx}`}>
+                    <span className="photo-upload-tag-text">
+                      {idx + 1}. {file.name}
+                    </span>
+                    <button
+                      type="button"
+                      className="photo-upload-tag-remove"
+                      onClick={() => {
+                        setFiles((prev) => prev.filter((_, i) => i !== idx));
+                      }}
+                      disabled={submitting}
+                      aria-label={`${file.name} 삭제`}
+                    >
+                      지우기
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
           <button className="photo-upload-btn" type="submit" disabled={submitting}>
             {submitting ? '업로드 중...' : '사진 올리기'}
           </button>
