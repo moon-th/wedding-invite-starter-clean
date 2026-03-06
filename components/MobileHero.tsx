@@ -20,7 +20,7 @@ export default function MobileHero({ meta }: { meta: InviteMeta }) {
         {/* 커버 이미지 */}
         <img
           className="photo"
-          src="/src/image/main.jpeg"
+          src="/src/image/main.webp"
           alt=""
           loading="eager"
         />
