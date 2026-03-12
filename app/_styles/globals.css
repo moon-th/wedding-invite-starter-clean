@@ -530,12 +530,17 @@ a:hover{ text-decoration: underline; }
   justify-content:center;
   z-index:9999;
   padding: 10px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 .rsvp-modal{
   background:#fff;
   width: min(720px, 96vw);
   border-radius: 6px;
   overflow:hidden;
+  max-height: calc(100dvh - 20px);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 .rsvp-card{
   padding: 16px;
@@ -620,6 +625,21 @@ a:hover{ text-decoration: underline; }
   color: #d33;
   font-size: 13px;
   margin: 4px 0 0;
+}
+
+@media (max-width: 768px){
+  .rsvp-overlay{
+    align-items: flex-start;
+    padding:
+      max(10px, env(safe-area-inset-top))
+      10px
+      max(10px, env(safe-area-inset-bottom));
+  }
+  .rsvp-modal{
+    width: min(100%, 96vw);
+    margin: 52px auto 12px;
+    max-height: calc(100dvh - 64px);
+  }
 }
 
 /* Thank you Section */

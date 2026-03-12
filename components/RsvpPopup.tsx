@@ -24,6 +24,13 @@ export default function RsvpPopup() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
+  const handleFieldFocus = (e: React.FocusEvent<HTMLElement>) => {
+    const target = e.currentTarget;
+    window.setTimeout(() => {
+      target.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    }, 250);
+  };
+
   useEffect(() => {
     if (!open && !noticeOpen) return;
     const originalOverflow = document.body.style.overflow;
@@ -194,6 +201,7 @@ export default function RsvpPopup() {
                   className="rsvp-input"
                   value={companions}
                   onChange={(e) => setCompanions(e.target.value)}
+                  onFocus={handleFieldFocus}
                 >
                   {Array.from({ length: 10 }, (_, i) => String(i+1)).map((v) => (
                     <option key={v} value={v}>
@@ -258,6 +266,7 @@ export default function RsvpPopup() {
                   placeholder="성함을 입력해 주세요"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
+                  onFocus={handleFieldFocus}
                   required
                 />
               </div>
@@ -269,6 +278,7 @@ export default function RsvpPopup() {
                   placeholder="연락처를 입력해 주세요"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
+                  onFocus={handleFieldFocus}
                   required
                 />
               </div>
