@@ -213,6 +213,26 @@ a:hover{ text-decoration: underline; }
 }
 
 .hero{ position:relative; }
+.hero{
+  padding-top: 50px;
+}
+.hero::before{
+  content:"";
+  position:absolute;
+  top:0;
+  left:0;
+  right:0;
+  height: 88px;
+  pointer-events:none;
+  z-index: 1;
+  background: linear-gradient(
+    180deg,
+    rgba(255,255,255,0.96) 0%,
+    rgba(255,249,251,0.8) 38%,
+    rgba(255,249,251,0.28) 72%,
+    rgba(255,255,255,0) 100%
+  );
+}
 .hero .hero-frame{
   position:relative; overflow:hidden;
   box-shadow: var(--shadow);
@@ -520,6 +540,16 @@ a:hover{ text-decoration: underline; }
 .rsvp-card{
   padding: 16px;
 }
+.rsvp-notice-card{
+  text-align: center;
+}
+.rsvp-notice-text{
+  color:#444;
+  font-size: 15px;
+  line-height: 1.9;
+  font-family: var(--font-title);
+  padding: 10px 4px 4px;
+}
 .rsvp-header{
   display:flex;
   justify-content: space-between;
@@ -541,6 +571,9 @@ a:hover{ text-decoration: underline; }
   gap: 10px;
   font-family: var(--font-title);
 }
+.rsvp-row.disabled{
+  opacity: .5;
+}
 .rsvp-pill{
   flex:1;
   padding: 12px;
@@ -553,6 +586,9 @@ a:hover{ text-decoration: underline; }
 .rsvp-pill.active{
   border-color:#111;
   background:#fff;
+}
+.rsvp-pill:disabled{
+  cursor: not-allowed;
 }
 .rsvp-input{
   width:100%;

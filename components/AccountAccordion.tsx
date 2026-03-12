@@ -19,7 +19,7 @@ export default function AccountAccordion({ groom, bride }: Props) {
 
   async function copy(text: string) {
     try {
-      await navigator.clipboard.writeText(text);
+      await navigator.clipboard.writeText(text.replace(/\s+/g, ''));
       alert('복사되었습니다.');
   } catch {}
   }
@@ -92,7 +92,7 @@ function AccountRow({ item, onCopy }: { item: AccountItem; onCopy: (text: string
       <div className="gift-bank">
         {item.bank} {item.no}
       </div>
-      <button className="gift-copy" onClick={() => onCopy(`${item.bank} ${item.no}`)} aria-label="계좌번호 복사">
+      <button className="gift-copy" onClick={() => onCopy(item.no)} aria-label="계좌번호 복사">
         📋
       </button>
     </div>

@@ -18,6 +18,7 @@ import InfoSlider from '@/components/InfoSlider';
 import ThankYouSection from '@/components/ThankYouSection';
 import PhotoUploadSection from '@/components/PhotoUploadSection';
 import SectionNav from '@/components/SectionNav';
+import BgmAutoplay from '@/components/BgmAutoplay';
 
 import AccountAccordion from '@/components/AccountAccordion';
 
@@ -78,6 +79,7 @@ export default async function InvitePage({ params }: { params: { slug: string } 
 
   return (
     <>
+      <BgmAutoplay />
       <SectionNav />
       {/* 모바일 우선 히어로(폰 프레임 없이 바로 시작) */}
       <MobileHero meta={meta} />

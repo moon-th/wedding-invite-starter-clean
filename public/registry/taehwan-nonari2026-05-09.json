@@ -10,11 +10,12 @@
   "gasGuestbookUrl": "https://script.google.com/macros/s/AKfycbwJlgP3nVyE0_rkCc-tvnemOMb7vcy9eklTf0UhpHBIINZarJrLTad9WC891AeAfAng/exec",
   "accounts": {
     "groom": [
-      { "bank": "신한", "no": "110-337-366533", "name": "문태환" }
+      { "bank": "신한", "no": "110 337 366533", "name": "문태환" },
+      { "bank": "농협", "no": "302 5360 8500 11", "name": "문종호" }
     ],
     "bride": [
-      { "bank": "신한", "no": "110-509-506846", "name": "노나리" },
-      { "bank": "농협", "no": "130-0255-2133-937", "name": "조은숙" }
+      { "bank": "신한", "no": "110 509 506846", "name": "노나리" },
+      { "bank": "농협", "no": "130 0255 2133 937", "name": "조은숙" }
     ]
   },
   "theme": "classic-01",
