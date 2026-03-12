@@ -89,9 +89,10 @@ export default function KakaoShareButton() {
       return;
     }
 
-    // 카카오 개발자 콘솔에 등록된 도메인과 동일해야 함
-    const origin = window.location.origin;
-    const shareUrl = `${origin}/w/taehwan-nonari2026-05-09`;
+    const currentUrl = new URL(window.location.href);
+    currentUrl.hash = '';
+    const shareUrl = currentUrl.toString();
+    const origin = currentUrl.origin;
     const link = { mobileWebUrl: shareUrl, webUrl: shareUrl };
     const imageUrl = `${origin}/src/image/main.webp`; // 공개 경로(https)여야 이미지가 보입니다.
 
