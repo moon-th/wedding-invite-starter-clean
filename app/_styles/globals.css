@@ -346,6 +346,23 @@ a:hover{ text-decoration: underline; }
 }
 
 /* ───────── Gallery ───────── */
+.gallery-pages{
+  display:flex;
+  overflow-x:auto;
+  overflow-y:hidden;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.gallery-pages::-webkit-scrollbar{
+  display:none;
+}
+.gallery-page{
+  flex: 0 0 100%;
+  min-width: 100%;
+  scroll-snap-align: start;
+}
 .gallery{
   display:grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -386,6 +403,26 @@ a:hover{ text-decoration: underline; }
   object-fit: cover;
   object-position: center;
   background:#f3f1f1;
+}
+.gallery-pagination{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap: 7px;
+  margin-top: 12px;
+}
+.gallery-page-dot{
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  border: 0;
+  padding: 0;
+  background: rgba(122, 30, 58, 0.18);
+  cursor: pointer;
+}
+.gallery-page-dot.active{
+  width: 22px;
+  background: #7A1E3A;
 }
 .gallery-horizontal{
   overflow-x: auto;

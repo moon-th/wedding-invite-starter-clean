@@ -26,7 +26,7 @@ export function InvitationSection() {
             <br />
             서로 다른 풍경에서 자라온 두 사람이
             <br />
-            이제는 같은 풍경을 보고 살아가려합니다.
+            이제는 같은 풍경을 보고 <br />살아가려합니다.
           </p>
 
           <p>
