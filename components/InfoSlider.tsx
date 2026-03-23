@@ -7,7 +7,7 @@ const slides = [
   {
     kind: 'location',
     title: '셔틀버스 안내',
-    intro: '신도림역에서 왕복 셔틀버스를 이용하실 수 있습니다.',
+    intro: '신도림역에서 왕복 셔틀버스를\n이용하실 수 있습니다.',
     sections: [
       {
         label: '서울 출발',
