@@ -21,7 +21,7 @@ const slides = [
       },
     ],
     buttonLabel: '탑승위치보기',
-    href: 'https://kko.to/3XykbuLDIn',
+    href: 'https://naver.me/xCj8mUFf',
   },
   {
     kind: 'text',
